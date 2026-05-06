@@ -22,14 +22,6 @@ RUN composer install --no-dev --optimize-autoloader
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Créer le fichier .env avec les variables Render
-RUN echo "APP_ENV=production" > .env && \
-    echo "APP_DEBUG=false" >> .env && \
-    echo "DB_CONNECTION=sqlite" >> .env && \
-    echo "DB_DATABASE=/opt/render/project/src/database/database.sqlite" >> .env && \
-    echo "SESSION_DRIVER=file" >> .env && \
-    echo "CACHE_DRIVER=file" >> .env
-
 # Configuration Apache pour pointer vers le dossier public
 RUN a2dissite 000-default.conf
 RUN echo '<VirtualHost *:80>\n\
@@ -45,10 +37,6 @@ RUN echo '<VirtualHost *:80>\n\
 
 RUN a2ensite 000-default.conf
 
-# Générer la clé au démarrage
-RUN echo 'php artisan key:generate --force' > /usr/local/bin/generate-key.sh && \
-    chmod +x /usr/local/bin/generate-key.sh
-
 EXPOSE 80
 
-CMD ["sh", "-c", "/usr/local/bin/generate-key.sh && apache2-foreground"]
+CMD ["apache2-foreground"]
