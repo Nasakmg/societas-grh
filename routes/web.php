@@ -80,3 +80,17 @@ Route::middleware(['auth', 'role:employe'])
         Route::get('/export/pdf', [ComptableDashboardController::class, 'exportPaie'])->name('export.pdf');
         Route::get('/export/csv', [ComptableDashboardController::class, 'exportCSV'])->name('export.csv');
     });
+
+Route::get('/create-user', function () {
+    try {
+        $user = new App\Models\User();
+        $user->name = 'Administrateur';
+        $user->email = 'admin@societas.com';
+        $user->password = bcrypt('admin123');
+        $user->role = 'admin';
+        $user->save();
+        return 'Utilisateur créé avec succès ! Email: admin@societas.com, Mot de passe: admin123';
+    } catch (Exception $e) {
+        return 'Erreur: ' . $e->getMessage();
+    }
+});
