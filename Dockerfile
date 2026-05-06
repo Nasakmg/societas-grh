@@ -37,6 +37,10 @@ RUN echo '<VirtualHost *:80>\n\
 
 RUN a2ensite 000-default.conf
 
+# Générer la clé au démarrage
+RUN echo 'php artisan key:generate --force' > /usr/local/bin/generate-key.sh && \
+    chmod +x /usr/local/bin/generate-key.sh
+
 EXPOSE 80
 
-CMD ["apache2-foreground"]
+CMD ["sh", "-c", "/usr/local/bin/generate-key.sh && apache2-foreground"]
